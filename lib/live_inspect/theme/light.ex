@@ -1,4 +1,4 @@
-defmodule LiveInspect.Theme.Default do
+defmodule LiveInspect.Theme.Light do
   @behaviour LiveInspect.Theme
 
   @impl true
