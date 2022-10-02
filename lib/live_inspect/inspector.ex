@@ -1,20 +1,8 @@
-defmodule LiveDump.Dump do
+defmodule LiveInspect.Inspector do
   @moduledoc """
   TODO
   """
   use Phoenix.LiveComponent
-
-  @ignored_root_assigns [
-    :__changed__,
-    :__expanded__,
-    :__key__,
-    :__root__,
-    :__theme__,
-    :__value__,
-    :flash,
-    :id,
-    :myself
-  ]
 
   def mount(socket) do
     {:ok, assign(socket, __root__: true, __theme__: theme())}
@@ -28,8 +16,7 @@ defmodule LiveDump.Dump do
     {:ok,
      socket
      |> assign(assigns)
-     |> assign_initial_expanded()
-     |> assign_value()}
+     |> assign_initial_expanded()}
   end
 
   def render(assigns) do
@@ -95,20 +82,8 @@ defmodule LiveDump.Dump do
     end
   end
 
-  defp assign_value(socket) do
-    if socket.assigns.__root__ do
-      assign(
-        socket,
-        :__value__,
-        Map.drop(socket.assigns, @ignored_root_assigns)
-      )
-    else
-      socket
-    end
-  end
-
   defp theme do
-    Application.get_env(:live_dump, :theme, LiveDump.Theme.Default)
+    Application.get_env(:live_inspect, :theme, LiveInspect.Theme.Default)
   end
 
   defp short?(value) do

@@ -1,9 +1,9 @@
-defmodule LiveDump.MixProject do
+defmodule LiveInspect.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :live_dump,
+      app: :live_inspect,
       version: "0.1.0",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,

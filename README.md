@@ -1,21 +1,20 @@
-# LiveDump
+# LiveInspect
 
 **TODO: Add description**
 
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `live_dump` to your list of dependencies in `mix.exs`:
+by adding `live_inspect` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:live_dump, "~> 0.1.0"}
+    {:live_inspect, "~> 0.1.0"}
   ]
 end
 ```
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/live_dump>.
-
+be found at <https://hexdocs.pm/live_inspect>.

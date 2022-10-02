@@ -1,5 +1,5 @@
-defmodule LiveDump.Theme.Default do
-  @behaviour LiveDump.Theme
+defmodule LiveInspect.Theme.Default do
+  @behaviour LiveInspect.Theme
 
   @impl true
   def style do

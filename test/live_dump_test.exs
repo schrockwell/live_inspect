@@ -1,8 +1,8 @@
 defmodule LiveDumpTest do
   use ExUnit.Case
-  doctest LiveDump
+  doctest LiveInspect
 
   test "greets the world" do
-    assert LiveDump.hello() == :world
+    assert LiveInspect.hello() == :world
   end
 end
