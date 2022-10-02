@@ -1,7 +1,25 @@
 defmodule LiveInspect.Inspector do
   @moduledoc """
-  TODO
+  The LiveComponent to inspect values directly on the page.
+
+  Typically, the `LiveInspect.live_inspect/1` convenience helper should be used instead.
+
+  ## Example
+
+      <.live_component
+        module={LiveInspect.Inspector}
+        id="live-inspect"
+        value={%{my_assign: @my_assign, my_other_assign: @my_other_assign}}
+      />
+
+  ## Attributes
+
+    - `:id` - required
+    - `:value` - required; any term to inspect
+    - `:root?` - optional; indicates that this inspector is rendered directly on the page, and is not nested; defaults to `true`
+    - `:theme` - optional; the theme module; defaults to the configured theme
   """
+
   use Phoenix.LiveComponent
 
   defp theme do
@@ -10,7 +28,7 @@ defmodule LiveInspect.Inspector do
 
   @impl true
   def mount(socket) do
-    {:ok, assign(socket, root?: true, theme: theme(), style: nil)}
+    {:ok, assign(socket, root?: true, style: nil)}
   end
 
   @impl true
@@ -22,6 +40,7 @@ defmodule LiveInspect.Inspector do
     {:ok,
      socket
      |> assign(assigns)
+     |> assign_new(:theme, fn -> theme() end)
      |> assign_initial_expanded()}
   end
 
@@ -42,7 +61,7 @@ defmodule LiveInspect.Inspector do
   @impl true
   def render(assigns) do
     ~H"""
-    <div id={@id}>
+    <div id={@id} {root_attrs(@root?, @theme)}>
       <%= if @root? && @style do %>
         <.style style={@style} />
       <% end %>
@@ -141,7 +160,10 @@ defmodule LiveInspect.Inspector do
   defp inspect_hidden(map) when is_map(map) and map_size(map) == 1, do: "1 field"
   defp inspect_hidden(map) when is_map(map), do: "#{map_size(map)} fields"
 
-  defp inspect_hidden(_else), do: "…"
+  defp inspect_hidden(_else), do: "•••"
+
+  defp root_attrs(false, _theme), do: %{}
+  defp root_attrs(true, theme), do: theme.root_attrs()
 
   # This messes up VS Code syntax highlighting, so let's chuck it at the bottom in a function
   # component so it won't screw up the rest of the file

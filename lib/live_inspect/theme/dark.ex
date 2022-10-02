@@ -1,10 +1,10 @@
-defmodule LiveInspect.Theme.Light do
+defmodule LiveInspect.Theme.Dark do
   @moduledoc """
-  The default theme, for designs with light backgrounds.
+  An alternative theme, for designs with dark backgrounds.
 
   ## Configuration
 
-      config :live_inspect, theme: LiveInspect.Theme.Light
+      config :live_inspect, theme: LiveInspect.Theme.Dark
   """
   use LiveInspect.Theme.Base
 
@@ -19,7 +19,7 @@ defmodule LiveInspect.Theme.Light do
     .live-inspect-table td,
     .live-inspect-table th {
       border-collapse: collapse;
-      border: 1px solid #999;
+      border: 1px solid #555;
       padding: 0.25rem;
       text-align: left;
       vertical-align: top;
@@ -29,29 +29,29 @@ defmodule LiveInspect.Theme.Light do
       -moz-user-select: none;
       -ms-user-select: none;
       -webkit-user-select: none;
-      background-color: #ddd;
+      background-color: #000;
       cursor: pointer;
       font-weight: bold;
       user-select: none;
     }
 
     .live-inspect-table td {
-      background-color: #fff;
+      background-color: #333;
     }
 
     .live-inspect-table th:hover {
-      background-color: #bbb;
+      background-color: #222;
     }
 
-    .live-inspect-atom { color: #000; }
-    .live-inspect-binary { color: #00e; }
-    .live-inspect-list { color: #a0a; }
+    .live-inspect-atom { color: #ccc; }
+    .live-inspect-binary { color: #4FC1FF; }
+    .live-inspect-list { color: #f0f; }
     .live-inspect-map { color: #0a0; }
-    .live-inspect-number { color: #e00; }
-    .live-inspect-other { color: #000; }
-    .live-inspect-pid { color: #000; }
-    .live-inspect-struct { color: #0aa; }
-    .live-inspect-tuple { color: #aa0; }
+    .live-inspect-number { color: #f33; }
+    .live-inspect-other { color: #ccc; }
+    .live-inspect-pid { color: #ccc; }
+    .live-inspect-struct { color: #0bb; }
+    .live-inspect-tuple { color: #bb0; }
     """
   end
 end

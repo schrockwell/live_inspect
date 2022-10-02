@@ -1,6 +1,54 @@
 defmodule LiveInspect do
+  @moduledoc """
+  Inspect LiveView assigns directly in the browser.
+
+  ## Installation
+
+  LiveInspect is a developer tool that should _never_ be used in a production environment, so be sure
+  to specify the `:only` option when adding it to your deps in `mix.exs`:
+
+      def deps do
+        [
+          {:live_inspect, "~> 0.1.0", only: :dev}
+        ]
+      end
+
+  ## Usage
+
+  Just call the `live_inspect/1` function component with any values to examine.
+
+      <LiveInspect.live_inspect my_assign={@my_assign} my_other_assign={@my_other_assign} />
+
+  ## Configuration
+
+      # Default configuration
+      config :live_inspect, theme: LiveInspect.Theme.Light
+
+  ### Themes
+
+  The styling of the inspector is controlled via themes. Two themes are provided with the library:
+
+    - `LiveInspect.Theme.Light` (default)
+    - `LiveInspect.Theme.Dark`
+
+  See `LiveInspect.Theme` to implement a custom theme.
+  """
+
   use Phoenix.Component
 
+  @doc """
+  Function component wrapper for the `LiveInspect.Inspector` component.
+
+  ## Example
+
+      <LiveInspect.live_inspect my_assign={@my_assign} my_other_assign={@my_other_assign} />
+
+  ## Attributes
+
+    - `:id` - optional; defaults to `"live-inspect"`
+
+  All other assigns are put into a map and passed as the `value` attribute to `LiveInspect.Inspector`.
+  """
   def live_inspect(assigns) do
     assigns =
       assigns
@@ -8,7 +56,7 @@ defmodule LiveInspect do
       |> assign_new(:value, fn -> Map.drop(assigns, [:id, :__changed__]) end)
 
     ~H"""
-    <.live_component id={@id} module={LiveInspect.Inspector} root?={true} value={@value} />
+    <.live_component module={LiveInspect.Inspector} id={@id} value={@value} />
     """
   end
 end
