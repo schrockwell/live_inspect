@@ -127,10 +127,16 @@ defmodule LiveInspect.Inspector do
   defp inspect_hidden([_]), do: "1 item"
   defp inspect_hidden(list) when is_list(list), do: "#{length(list)} items"
 
-  defp inspect_hidden(%struct{} = value) when struct in [DateTime, NaiveDateTime],
-    do: inspect(value)
+  defp inspect_hidden(%struct{} = value)
+       when struct in [DateTime, NaiveDateTime, Regex, Range, MapSet],
+       do: inspect(value)
 
-  defp inspect_hidden(%struct{}), do: "%#{struct}{}"
+  defp inspect_hidden(%struct{}) do
+    case to_string(struct) do
+      "Elixir." <> module -> "%#{module}{}"
+      other -> "%#{other}{}"
+    end
+  end
 
   defp inspect_hidden(map) when is_map(map) and map_size(map) == 1, do: "1 field"
   defp inspect_hidden(map) when is_map(map), do: "#{map_size(map)} fields"
