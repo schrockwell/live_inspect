@@ -6,6 +6,8 @@
 
 Inspect LiveView assigns directly in the browser.
 
+LiveView 0.17+ is currently supported.
+
 ## Example
 
 ```heex
@@ -14,7 +16,7 @@ Inspect LiveView assigns directly in the browser.
 
 Maps and lists are collapsed by default, but can be clicked to expand and dig deeper.
 
-![Example usage](priv/example.png)
+![Example usage](assets/example.png)
 
 ## Installation
 

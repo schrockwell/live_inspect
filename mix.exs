@@ -5,9 +5,13 @@ defmodule LiveInspect.MixProject do
     [
       app: :live_inspect,
       version: "0.1.0",
-      elixir: "~> 1.14",
+      elixir: "~> 1.12",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      docs: docs(),
+      description: description(),
+      package: package(),
+      source_url: "https://github.com/schrockwell/live_inspect"
     ]
   end
 
@@ -23,6 +27,23 @@ defmodule LiveInspect.MixProject do
     [
       {:phoenix_live_view, "~> 0.17"},
       {:ex_doc, "~> 0.27", only: :dev, runtime: false}
+    ]
+  end
+
+  defp docs do
+    [
+      main: "LiveInspect"
+    ]
+  end
+
+  defp description do
+    "Inspect LiveView assigns directly in the browser"
+  end
+
+  defp package do
+    [
+      licenses: ["MIT"],
+      links: %{"GitHub" => "https://github.com/schrockwell/live_inspect"}
     ]
   end
 end
