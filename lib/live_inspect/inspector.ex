@@ -4,12 +4,18 @@ defmodule LiveInspect.Inspector do
   """
   use Phoenix.LiveComponent
 
-  def mount(socket) do
-    {:ok, assign(socket, __root__: true, __theme__: theme())}
+  defp theme do
+    Application.get_env(:live_inspect, :theme, LiveInspect.Theme.Light)
   end
 
+  @impl true
+  def mount(socket) do
+    {:ok, assign(socket, root?: true, theme: theme(), style: nil)}
+  end
+
+  @impl true
   def update(%{__toggle_expanded__: true}, socket) do
-    {:ok, assign(socket, :__expanded__, not socket.assigns.__expanded__)}
+    {:ok, assign(socket, :expanded?, not socket.assigns.expanded?)}
   end
 
   def update(assigns, socket) do
@@ -19,71 +25,77 @@ defmodule LiveInspect.Inspector do
      |> assign_initial_expanded()}
   end
 
+  @impl true
+  def preload([first | rest]) do
+    # Only inject CSS styles for the first invocation of this component
+    first = Map.put(first, :style, theme().style)
+    rest = for assigns <- rest, do: Map.put(assigns, :style, nil)
+    [first | rest]
+  end
+
+  @impl true
+  def handle_event("toggle-expanded", %{"id" => id}, socket) do
+    send_update(__MODULE__, %{id: id, __toggle_expanded__: true})
+    {:noreply, socket}
+  end
+
+  @impl true
   def render(assigns) do
     ~H"""
     <div id={@id}>
-      <%= if @__root__ && @__theme__.style do %>
-        <.style style={@__theme__.style} />
+      <%= if @root? && @style do %>
+        <.style style={@style} />
       <% end %>
       <%= cond do %>
-        <% not @__expanded__ -> %>
-          <%= inspect_hidden(@__value__) %>
-        <% enumerable?(@__value__) and not empty?(@__value__) -> %>
-          <%= if is_struct(@__value__) do %>
-            <div {@__theme__.value_attrs(@__key__, @__value__)}>
-              <%= inspect_hidden(@__value__) %>
+        <% not @expanded? -> %>
+          <%= inspect_hidden(@value) %>
+        <% enumerable?(@value) and not empty?(@value) -> %>
+          <%= if is_struct(@value) do %>
+            <div {@theme.value_attrs(@key, @value)}>
+              <%= inspect_hidden(@value) %>
             </div>
           <% end %>
 
-          <table {@__theme__.table_attrs()}>
-            <%= for {index, key, value} <- enumerate(@__value__) do %>
+          <table {@theme.table_attrs()}>
+            <%= for {index, key, value} <- enumerate(@value) do %>
               <tr>
                 <th
                   phx-click="toggle-expanded"
                   phx-value-id={nested_id(@id, index)}
                   phx-target={@myself}
-                  {@__theme__.key_attrs(key, value)}
+                  {@theme.key_attrs(key, value)}
                 >
                   <%= inspect(key) %>
                 </th>
-                <td {@__theme__.value_attrs(key, value)}>
+                <td {@theme.value_attrs(key, value)}>
                   <.live_component
                     module={__MODULE__}
                     id={nested_id(@id, index)}
-                    __root__={false}
-                    __key__={key}
-                    __value__={value}
+                    root?={false}
+                    key={key}
+                    value={value}
                   />
                 </td>
               </tr>
             <% end %>
           </table>
         <% :else -> %>
-          <%= inspect(@__value__) %>
+          <%= inspect(@value) %>
       <% end %>
     </div>
     """
   end
 
-  def handle_event("toggle-expanded", %{"id" => id}, socket) do
-    send_update(__MODULE__, %{id: id, __toggle_expanded__: true})
-    {:noreply, socket}
-  end
-
   defp assign_initial_expanded(socket) do
-    if changed?(socket, :__root__) do
+    if changed?(socket, :root?) do
       assign(
         socket,
-        :__expanded__,
-        socket.assigns.__root__ or short?(socket.assigns.__value__)
+        :expanded?,
+        socket.assigns.root? or short?(socket.assigns.value)
       )
     else
       socket
     end
-  end
-
-  defp theme do
-    Application.get_env(:live_inspect, :theme, LiveInspect.Theme.Default)
   end
 
   defp short?(value) do

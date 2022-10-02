@@ -8,7 +8,7 @@ defmodule LiveInspect do
       |> assign_new(:value, fn -> Map.drop(assigns, [:id, :__changed__]) end)
 
     ~H"""
-    <.live_component id={@id} module={LiveInspect.Inspector} __root__={true} __value__={@value} />
+    <.live_component id={@id} module={LiveInspect.Inspector} root?={true} value={@value} />
     """
   end
 end
