@@ -1,30 +1,16 @@
 defmodule LiveInspect.Inspector do
-  @moduledoc """
-  The LiveComponent to inspect values directly on the page.
+  @moduledoc false
 
-  Typically, the `LiveInspect.live_inspect/1` convenience helper should be used instead of directly
-  calling this component.
-
-  ## Example
-
-      <.live_component
-        module={LiveInspect.Inspector}
-        id="live-inspect"
-        value={%{my_assign: @my_assign, my_other_assign: @my_other_assign}}
-      />
-
-  ## Attributes
-
-    - `:id` - required
-    - `:value` - required; any term to inspect
-    - `:theme` - optional; the theme module; defaults to the configured theme
-  """
+  #
+  # Attributes
+  #
+  # - id
+  # - opts
+  # - term
+  # - theme
+  #
 
   use Phoenix.LiveComponent
-
-  defp theme do
-    Application.get_env(:live_inspect, :theme, LiveInspect.Theme.Light)
-  end
 
   @impl true
   def mount(socket) do
@@ -40,17 +26,18 @@ defmodule LiveInspect.Inspector do
     {:ok,
      socket
      |> assign(assigns)
-     |> assign_new(:theme, fn -> theme() end)
      |> assign_initial_expanded()}
   end
 
   @impl true
-  def preload([first | rest]) do
+  def preload([%{theme: theme} = first | rest]) do
     # Only inject CSS styles for the first invocation of this component
-    first = Map.put(first, :style, theme().style)
+    first = Map.put(first, :style, theme.style())
     rest = for assigns <- rest, do: Map.put(assigns, :style, nil)
     [first | rest]
   end
+
+  def preload(list_of_assigns), do: list_of_assigns
 
   @impl true
   def handle_event("toggle-expanded", %{"id" => id}, socket) do
@@ -67,16 +54,16 @@ defmodule LiveInspect.Inspector do
       <% end %>
       <%= cond do %>
         <% not @expanded? -> %>
-          <%= inspect_hidden(@value) %>
-        <% enumerable?(@value) and not empty?(@value) -> %>
-          <%= if is_struct(@value) do %>
-            <div {@theme.value_attrs(@key, @value)}>
-              <%= inspect_hidden(@value) %>
+          <%= inspect_hidden(@term) %>
+        <% enumerable?(@term) and not empty?(@term) -> %>
+          <%= if is_struct(@term) do %>
+            <div {@theme.value_attrs(@key, @term)}>
+              <%= inspect_hidden(@term) %>
             </div>
           <% end %>
 
           <table {@theme.table_attrs()}>
-            <%= for {index, key, value} <- enumerate(@value) do %>
+            <%= for {index, key, value} <- enumerate(@term, @opts) do %>
               <tr>
                 <th
                   phx-click="toggle-expanded"
@@ -88,18 +75,20 @@ defmodule LiveInspect.Inspector do
                 </th>
                 <td {@theme.value_attrs(key, value)}>
                   <.live_component
-                    module={__MODULE__}
+                    opts={@opts}
                     id={nested_id(@id, index)}
-                    root?={false}
                     key={key}
-                    value={value}
+                    module={__MODULE__}
+                    root?={false}
+                    term={value}
+                    theme={@theme}
                   />
                 </td>
               </tr>
             <% end %>
           </table>
         <% :else -> %>
-          <%= inspect(@value) %>
+          <%= inspect(@term) %>
       <% end %>
     </div>
     """
@@ -110,7 +99,7 @@ defmodule LiveInspect.Inspector do
       assign(
         socket,
         :expanded?,
-        socket.assigns.root? or short?(socket.assigns.value)
+        socket.assigns.root? or short?(socket.assigns.term)
       )
     else
       socket
@@ -129,14 +118,22 @@ defmodule LiveInspect.Inspector do
     is_list(value) or is_map(value)
   end
 
-  defp enumerate(list) when is_list(list) do
+  defp enumerate(list, _opts) when is_list(list) do
     for {value, index} <- Enum.with_index(list), do: {inspect(index), index, value}
   end
 
-  defp enumerate(map) when is_map(map) do
-    for {key, index} <- Enum.with_index(Map.keys(map)),
-        key != :__struct__,
-        do: {inspect(index), key, Map.fetch!(map, key)}
+  defp enumerate(map, opts) when is_map(map) do
+    case opts[:map_keys] do
+      :all ->
+        for {key, index} <- Enum.with_index(Map.keys(map)),
+            key != :__struct__,
+            do: {inspect(index), key, Map.fetch!(map, key)}
+
+      _else ->
+        for {key, index} <- Enum.with_index(Map.keys(map)),
+            not (is_atom(key) and String.starts_with?(to_string(key), "_")),
+            do: {inspect(index), key, Map.fetch!(map, key)}
+    end
   end
 
   defp nested_id(id, index) do

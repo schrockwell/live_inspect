@@ -9,12 +9,13 @@ defmodule LiveInspect do
 
       def deps do
         [
-          {:live_inspect, "~> 0.1.0", only: :dev}
+          {:live_inspect, "~> 0.2", only: :dev}
         ]
       end
 
 
-  Then, import `LiveInspect.live_inspect/1` into the generated Phoenix helpers:
+  Then, import `LiveInspect.live_inspect/1` into the generated Phoenix helpers, again being careful
+  to only import it in the `:dev` environment:
 
       # lib/my_app_web.ex
       defmodule MyAppWeb do
@@ -45,13 +46,7 @@ defmodule LiveInspect do
 
   ## Usage
 
-  Just call the `live_inspect/1` function component with any values to examine.
-
-      <.live_inspect my_assign={@my_assign} my_other_assign={@my_other_assign} />
-
-  All assigns can be inspected at once, e.g.
-
-      <.live_inspect {assigns} />
+  See `live_inspect/1` for examples.
 
   ## Configuration
 
@@ -71,27 +66,53 @@ defmodule LiveInspect do
   use Phoenix.Component
 
   @doc """
-  Function component wrapper for the `LiveInspect.Inspector` component.
+  Inspect a value directly in the browser.
 
-  ## Example
+  ## Examples
 
-      <.live_inspect my_assign={@my_assign} my_other_assign={@my_other_assign} />
+  ```heex
+  <.live_inspect term={assigns} />
+  <.live_inspect term={@my_assign} />
+  <.live_inspect term={%{my_assign: @my_assign, my_other_assign: @my_other_assign}} />
+  ```
 
-  ## Attributes
+  ## Required Attributes
 
-    - `__id__` - optional; the `id` of the `LiveInspect.Inspector` component; defaults to `"live-inspect"`
+    - `term` - the value to inspect
 
-  All other assigns are put into a map and passed as the `value` attribute to `LiveInspect.Inspector`.
+  ## Optional Attributes
+
+    - `opts` - a keyword list of options (see below); defaults to `[]`
+    - `theme` - the theme module; defaults to the configured theme
+    - `unique` - a string-encodable value to ensure uniqueness of the LiveComponent `id` within the LiveView
+
+  ### Options (`opts` attribute)
+
+    - `:map_keys` - specify `:all` to render all map fields; defaults to `:default`, which excludes
+      atom keys beginning with an underscore
+
   """
   @spec live_inspect(Phoenix.LiveView.Socket.assigns()) :: Phoenix.LiveView.Rendered.t()
   def live_inspect(assigns) do
     assigns =
       assigns
-      |> assign_new(:__id__, fn -> "live-inspect" end)
-      |> assign_new(:__value__, fn -> Map.drop(assigns, [:__id__, :__changed__]) end)
+      |> assign_new(:id, &default_id/1)
+      |> assign_new(:theme, fn -> default_theme() end)
+      |> assign_new(:opts, fn -> [] end)
 
     ~H"""
-    <.live_component module={LiveInspect.Inspector} id={@__id__} value={@__value__} />
+    <.live_component module={LiveInspect.Inspector} opts={@opts} id={@id} term={@term} theme={@theme} />
     """
+  end
+
+  defp default_id(assigns) do
+    case Map.fetch(assigns, :unique) do
+      {:ok, suffix} -> "live-inspect-#{suffix}"
+      :error -> "live-inspect"
+    end
+  end
+
+  defp default_theme do
+    Application.get_env(:live_inspect, :theme, LiveInspect.Theme.Light)
   end
 end

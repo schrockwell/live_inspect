@@ -4,7 +4,7 @@ defmodule LiveInspect.MixProject do
   def project do
     [
       app: :live_inspect,
-      version: "0.1.1",
+      version: "0.2.0",
       elixir: "~> 1.12",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -25,8 +25,9 @@ defmodule LiveInspect.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:phoenix_live_view, "~> 0.17"},
-      {:ex_doc, "~> 0.27", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.27", only: :dev, runtime: false},
+      {:makeup_eex, "~> 0.1.1", only: :dev},
+      {:phoenix_live_view, "~> 0.17"}
     ]
   end
 

@@ -11,11 +11,9 @@ LiveView 0.17+ is currently supported.
 ## Examples
 
 ```heex
-# Inspect all assigns
-<.live_inspect {assigns} />
-
-# Inspect specific assigns
-<.live_inspect context={@context} my_alerts={@my_alerts} />
+<.live_inspect term={assigns} />
+<.live_inspect term={@my_assign} />
+<.live_inspect term={%{my_assign: @my_assign, my_other_assign: @my_other_assign}} />
 ```
 
 Maps and lists are collapsed by default, but can be clicked to expand and dig deeper.
@@ -31,7 +29,7 @@ to specify the `:only` option when adding it to your deps in `mix.exs`:
 def deps do
   [
     # IMPORTANT: Only in :dev environment!
-    {:live_inspect, "~> 0.1.0", only: :dev}
+    {:live_inspect, "~> 0.2", only: :dev}
   ]
 end
 ```
