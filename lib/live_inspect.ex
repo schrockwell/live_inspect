@@ -83,6 +83,7 @@ defmodule LiveInspect do
 
   All other assigns are put into a map and passed as the `value` attribute to `LiveInspect.Inspector`.
   """
+  @spec live_inspect(Phoenix.LiveView.Socket.assigns()) :: Phoenix.LiveView.Rendered.t()
   def live_inspect(assigns) do
     assigns =
       assigns
