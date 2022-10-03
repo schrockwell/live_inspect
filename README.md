@@ -12,10 +12,10 @@ LiveView 0.17+ is currently supported.
 
 ```heex
 # Inspect all assigns
-<LiveInspect.live_inspect {assigns} />
+<.live_inspect {assigns} />
 
 # Inspect specific assigns
-<LiveInspect.live_inspect context={@context} my_alerts={@my_alerts} />
+<.live_inspect context={@context} my_alerts={@my_alerts} />
 ```
 
 Maps and lists are collapsed by default, but can be clicked to expand and dig deeper.
