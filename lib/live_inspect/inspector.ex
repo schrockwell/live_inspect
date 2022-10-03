@@ -2,7 +2,8 @@ defmodule LiveInspect.Inspector do
   @moduledoc """
   The LiveComponent to inspect values directly on the page.
 
-  Typically, the `LiveInspect.live_inspect/1` convenience helper should be used instead.
+  Typically, the `LiveInspect.live_inspect/1` convenience helper should be used instead of directly
+  calling this component.
 
   ## Example
 
@@ -16,7 +17,6 @@ defmodule LiveInspect.Inspector do
 
     - `:id` - required
     - `:value` - required; any term to inspect
-    - `:root?` - optional; indicates that this inspector is rendered directly on the page, and is not nested; defaults to `true`
     - `:theme` - optional; the theme module; defaults to the configured theme
   """
 

@@ -12,7 +12,7 @@ LiveView 0.17+ is currently supported.
 
 ```heex
 # Inspect all assigns
-<LiveInspect.live_inspect assigns={assigns} />
+<LiveInspect.live_inspect {assigns} />
 
 # Inspect specific assigns
 <LiveInspect.live_inspect context={@context} my_alerts={@my_alerts} />

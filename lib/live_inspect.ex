@@ -51,7 +51,7 @@ defmodule LiveInspect do
 
   All assigns can be inspected at once, e.g.
 
-      <.live_inspect assigns={assigns} />
+      <.live_inspect {assigns} />
 
   ## Configuration
 
@@ -79,18 +79,18 @@ defmodule LiveInspect do
 
   ## Attributes
 
-    - `:id` - optional; defaults to `"live-inspect"`
+    - `__id__` - optional; the `id` of the `LiveInspect.Inspector` component; defaults to `"live-inspect"`
 
   All other assigns are put into a map and passed as the `value` attribute to `LiveInspect.Inspector`.
   """
   def live_inspect(assigns) do
     assigns =
       assigns
-      |> assign_new(:id, fn -> "live-inspect" end)
-      |> assign_new(:value, fn -> Map.drop(assigns, [:id, :__changed__]) end)
+      |> assign_new(:__id__, fn -> "live-inspect" end)
+      |> assign_new(:__value__, fn -> Map.drop(assigns, [:__id__, :__changed__]) end)
 
     ~H"""
-    <.live_component module={LiveInspect.Inspector} id={@id} value={@value} />
+    <.live_component module={LiveInspect.Inspector} id={@__id__} value={@__value__} />
     """
   end
 end
