@@ -13,11 +13,45 @@ defmodule LiveInspect do
         ]
       end
 
+
+  Then, import `LiveInspect.live_inspect/1` into the generated Phoenix helpers:
+
+      # lib/my_app_web.ex
+      defmodule MyAppWeb do
+        def live_view do
+          quote do
+            # ...generated code...
+
+            unquote(live_inspect())
+          end
+        end
+
+        def live_component do
+          quote do
+            # ...generated code...
+
+            unquote(live_inspect())
+          end
+        end
+
+        defp live_inspect do
+          if Mix.env() == :dev do
+            quote do
+              import LiveInspect, only: [live_inspect: 1]
+            end
+          end
+        end
+      end
+
   ## Usage
 
   Just call the `live_inspect/1` function component with any values to examine.
 
-      <LiveInspect.live_inspect my_assign={@my_assign} my_other_assign={@my_other_assign} />
+      <.live_inspect my_assign={@my_assign} my_other_assign={@my_other_assign} />
+
+  All assigns can be inspected at once, e.g.
+
+      <.live_inspect assigns={assigns} />
 
   ## Configuration
 
@@ -41,7 +75,7 @@ defmodule LiveInspect do
 
   ## Example
 
-      <LiveInspect.live_inspect my_assign={@my_assign} my_other_assign={@my_other_assign} />
+      <.live_inspect my_assign={@my_assign} my_other_assign={@my_other_assign} />
 
   ## Attributes
 
