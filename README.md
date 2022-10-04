@@ -1,5 +1,6 @@
 # LiveInspect
 
+[![CI](https://github.com/schrockwell/live_inspect/actions/workflows/ci.yml/badge.svg)](https://github.com/schrockwell/live_inspect/actions/workflows/ci.yml)
 [![Module Version](https://img.shields.io/hexpm/v/live_inspect.svg)](https://hex.pm/packages/live_inspect)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-purple.svg)](https://hexdocs.pm/live_inspect/)
 [![License](https://img.shields.io/hexpm/l/live_inspect.svg)](https://github.com/schrockwell/live_inspect/blob/main/LICENSE)
